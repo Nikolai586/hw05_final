@@ -1,0 +1,16 @@
+{% load user_filters %}
+{% for item in comments %}
+<div class="media mb-4">
+<div class="media-body">
+        <h5 class="mt-0">
+        <a
+                href="{% url 'profile' item.author %}"
+                name="comment_{{ item.id }}"
+                >{{ item.author }}</a>
+        </h5>
+        <p>{{ item.text }}</p>
+        Дата: {{item.created}}
+</div>
+</div>
+
+{% endfor %}
