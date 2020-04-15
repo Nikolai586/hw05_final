@@ -10,7 +10,6 @@ User = get_user_model()
 class ProfileTest(TestCase):
 
     def setUp(self):
-        #print('Начало теста')
         self.client = Client()
         self.user = User.objects.create_user(username='koya', email='koya@koya.ru', password='123456')
         self.client.force_login(self.user)
@@ -77,31 +76,20 @@ class Test_img(TestCase):
         response = self.client.get(f'/group/{self.group.slug}/')
         self.assertContains(response, '<img')
         self.assertEqual(response.status_code, 200)
+
     def test_img_load(self):
         with open('media/posts/fas.txt', 'rb') as fr:
             self.client.post(f'/{self.user.username}/{self.post.id}/edit/', {'text': self.post.text, 'image': fr})
         response = self.client.get(f'/{self.user.username}/{self.post.id}/')
         self.assertNotContains(response, '<img')
-'''
-class Test_img_load(TestCase):
-    
-    def setUp(self):
-        self.client = Client()
-        self.user = User.objects.create_user(username='Tor', email='boggroma@asgart.ru', password='123456')
-        self.post = Post.objects.create(text='Я бог грома', author=self.user)
-        self.client.force_login(self.user)
-    def test_img_load(self):
-        with open('media/posts/fas.txt', 'rb') as fr:
-            self.client.post(f'/{self.user.username}/{self.post.id}/edit/', {'text': self.post.text, 'image': fr})
-        response = self.client.get(f'/{self.user.username}/{self.post.id}/')
-        self.assertNotContains(response, '<img')
-'''
+
 class Cache(TestCase):
 
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username='Tor', email='boggroma@asgart.ru', password='123456')
         self.client.force_login(self.user)
+
     def test_cache(self):
         response = self.client.get('/')
         self.text = 'Я бог грома'
@@ -122,12 +110,14 @@ class Follow_test(TestCase):
         self.text = 'это текст'
         self.post = Post.objects.create(text=self.text, author=self.user)
         self.client.force_login(self.user2)
+
     def test_follow(self):
         response = self.client.get('/follow/')
         self.assertContains(response, self.text)
         Follow.objects.filter(user=self.user2, author=self.user).delete()
         response = self.client.get('/follow/')
         self.assertNotContains(response, self.text)
+
     def test_follow_2(self):
         self.text_2 = 'это еще один пост'
         Post.objects.create(text=self.text_2, author=self.user)

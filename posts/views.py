@@ -27,9 +27,10 @@ def group_posts(request, slug):
 @login_required
 def new_post(request):
     if request.method == 'POST':
-        form = PostForm(request.POST or None, files=request.FILES or None)
+        form = PostForm(request.POST, files=request.FILES or None)
         if form.is_valid():
-            new = Post.objects.create(author=request.user, text=form.cleaned_data['text'], group=form.cleaned_data['group'], image=form.cleaned_data['image'])
+            new = form.save(commit=False)
+            new.author = request.user
             new.save()
             return redirect('index')
     else:
@@ -91,7 +92,9 @@ def add_comment(request, username, post_id):
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
-            new = Comment.objects.create(post=post, text=form.cleaned_data['text'], author=request.user)
+            new = form.save(commit=False)
+            new.author = request.user
+            new.post = post
             new.save()
             return redirect('post', username=post.author, post_id=post_id)
     else:
