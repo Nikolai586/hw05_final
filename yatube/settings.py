@@ -26,6 +26,7 @@ SECRET_KEY = 'mc@@d4yx^5e0gppp=!ozuw%@1iy9tag$*f@!=0evb!_lclu3ro'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '*',
     "localhost",
     "127.0.0.1",
     "[::1]",
@@ -46,7 +47,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sorl.thumbnail'
+    'sorl.thumbnail',
+    'rest_framework.authtoken',
+    #"debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -57,8 +60,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #"debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
-
+'''
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+'''
 ROOT_URLCONF = 'yatube.urls'
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 TEMPLATES = [
@@ -145,4 +153,14 @@ CACHES = {
         'default': {
                 'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated', 
+    ],
+    
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
 }
